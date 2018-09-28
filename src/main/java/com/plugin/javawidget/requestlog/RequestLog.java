@@ -109,7 +109,7 @@ public class RequestLog {
                 }
             }
             linkMap.put("jsonResolver",attribute);
-            linkMap.put("reponseBody", proceed);
+            linkMap.put("responseBody", proceed);
             String OS = request.getHeader("User-Agent");
             linkMap.put("OS", OS);
         }
