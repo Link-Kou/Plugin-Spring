@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.plugin</groupId>
+    <artifactId>JavaWidget</artifactId>
+    <version>1.4.0</version>
+    <packaging>jar</packaging>
+
+    <name>Plugin-JavaWidget-${project.version}</name>
+    <url>http://maven.apache.org</url>
+
+    <description>Java 公共组件</description>
+    <inceptionYear>2017</inceptionYear>
+    <organization>
+        <name>Java 公共组件-来源:方遒</name>
+        <url>https://www.localhost.com</url>
+    </organization>
+
+    <properties>
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <class.dir>${project.build.directory}/classes</class.dir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java-version>1.8</java-version>
+        <org.springframework-version>4.3.7.RELEASE</org.springframework-version>
+        <org.aspectj-version>1.8.10</org.aspectj-version>
+        <repository-publicip>http://192.168.5.102:18002</repository-publicip>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>in-project</id>
+            <name>In Project Repo</name>
+            <url>file://${project.basedir}/lib</url>
+        </repository>
+        <repository>
+            <id>public maven</id>
+            <name>public maven</name>
+            <url>${repository-publicip}/nexus/repository/maven-public</url>
+        </repository>
+        <repository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
+    <!--   <distributionManagement>
+           <repository>
+               <id>releases</id>
+               <name>Nexus Release Repository</name>
+               <url>${repository-ip}/repository/maven-releases/</url>
+           </repository>
+           <snapshotRepository>
+               <id>snapshots</id>
+               <name>Nexus Snapshot Repository</name>
+               <url>${repository-ip}/repository/maven-snapshots/</url>
+           </snapshotRepository>
+       </distributionManagement>-->
+
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>richerway_deploy</name>
+            <url>http://192.168.5.102:18002/nexus/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>7.0</version>
+        </dependency>
+
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${org.springframework-version}</version>
+            <exclusions>
+                <!-- Exclude Commons Logging in favor of SLF4j -->
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+        <!-- spring jdbc -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${org.springframework-version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- mybatis 数据库操作 -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.4.2</version>
+        </dependency>
+
+        <!-- redis -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+
+        <!-- AspectJ -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${org.aspectj-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${org.aspectj-version}</version>
+        </dependency>
+
+        <!--lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.0</version>
+        </dependency>
+
+        <!--java数据对象关联查询框架-->
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jool-java-8</artifactId>
+            <version>0.9.13</version>
+        </dependency>
+
+
+        <!-- 加密 -->
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.54</version>
+        </dependency>
+
+        <!--扩展-->
+        <dependency>
+            <!--统一配置-->
+            <groupId>com.plugin</groupId>
+            <artifactId>ConfigProperty</artifactId>
+            <version>1.0.5</version>
+            <exclusions>
+                <!-- Exclude Commons Logging in favor of SLF4j -->
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--统一HTTP请求-->
+        <dependency>
+            <groupId>com.plugin</groupId>
+            <artifactId>HttpRequest</artifactId>
+            <version>3.0.9</version>
+        </dependency>
+
+        <!--统一互调-->
+        <dependency>
+            <groupId>com.plugin</groupId>
+            <artifactId>SpacerImport</artifactId>
+            <version>1.3.3</version>
+        </dependency>
+
+        <!--统一数据构建-->
+        <dependency>
+            <groupId>com.plugin</groupId>
+            <artifactId>DataBulid</artifactId>
+            <version>3.0.8</version>
+        </dependency>
+
+        <!--统一数据校验-->
+        <dependency>
+            <groupId>com.plugin</groupId>
+            <artifactId>AnnotationValidate</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+
+        <!--统一JSON包-->
+        <dependency>
+            <groupId>com.plugin</groupId>
+            <artifactId>Json</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.plugin</groupId>
+            <artifactId>Interceptor</artifactId>
+            <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.plugin</groupId>
+                    <artifactId>JavaWidget</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--扩展-->
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.name}</finalName>
+        <plugins>
+            <!--说明项目架包版本-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <!-- Disable annotation processing for ourselves. -->
+                    <!--<compilerArgument>-proc:none</compilerArgument>-->
+                </configuration>
+            </plugin>
+            <!-- 生成sources源码包的插件 -->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 打包JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <addMavenDescriptor>true</addMavenDescriptor>
+                        <index>true</index>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+        <!--解决XML资源文件在代码目录下编译的时候不拷贝问题-->
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+    </build>
+
+</project>

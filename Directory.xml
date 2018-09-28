@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trees properties="" code="Ops_.+\.Code$" codeval="1[0-9]{4}" msg="Ops_.+\.Msg$">
+    <model path="/src/main/" title="车队管理-jxx" tooltip="<b>Code:8*****</b>"
+		   properties="resources/config/JsonResultMsgCode.properties" code="SystemMsgEnums.+\.code$"
+		   codeval="\-[1-9][0-9]{2,5}|[1-9][0-9]{2,5}" msg="SystemMsgEnums.+\.msg$" >
+
+	</model>
+</trees>
