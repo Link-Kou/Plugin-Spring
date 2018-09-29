@@ -78,9 +78,9 @@ public class JsonBaseParamImpl implements HandlerMethodArgumentResolver {
                         .setCustom(baseParam.getCustom())
                         .setPlatform(baseParam.getPlatform())
                         .setDevTokenId(baseParam.getDevTokenId());
+            }else {
+                throw new IllegalArgumentException("无法识别开发者信息");
             }
-        } else {
-            throw new IllegalArgumentException("无法识别开发者信息");
         }
         return baseParam2;
         //#endregion

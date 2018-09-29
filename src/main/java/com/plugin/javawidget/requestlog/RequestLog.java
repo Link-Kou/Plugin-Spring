@@ -1,6 +1,5 @@
 package com.plugin.javawidget.requestlog;
 
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -8,7 +7,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.plugin.configproperty.Config;
@@ -40,10 +38,12 @@ public class RequestLog {
 
 
     private class json extends Json {
+
         @Override
         protected String toJson(Object src) {
             return super.toJson(src);
         }
+
     }
 
     @Around("@annotation(org.springframework.web.bind.annotation.RequestMapping) or "
@@ -113,7 +113,14 @@ public class RequestLog {
                     linkMap.put("requestBody",object);
                 }
             }*/
-            linkMap.put("requestBody",new JsonParser().parse(attribute).getAsJsonObject());
+            JsonObject asJsonObject = null;
+            try{
+                asJsonObject = new JsonParser().parse(attribute).getAsJsonObject();
+                linkMap.put("requestBody",asJsonObject);
+            }catch (Exception e){
+                linkMap.put("requestBody",attribute);
+                e.printStackTrace();
+            }
             linkMap.put("responseBody", proceed);
             String OS = request.getHeader("User-Agent");
             linkMap.put("OS", OS);

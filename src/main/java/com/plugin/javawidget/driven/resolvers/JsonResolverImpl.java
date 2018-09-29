@@ -115,9 +115,10 @@ public class JsonResolverImpl implements HandlerMethodArgumentResolver {
             throw new IllegalArgumentException(BYTEARRAYOUTPUTSTREAM.get());
         }
         String data = new String(baos.toByteArray(), StandardCharsets.UTF_8);
-        servletRequest.setAttribute(HTTPSERVLETREQUEST.get(),data);
         try {
-            return new json().fromJson(data, methodParameter.getGenericParameterType());
+            final Object o = new json().fromJson(data, methodParameter.getGenericParameterType());
+            servletRequest.setAttribute(HTTPSERVLETREQUEST.get(),data);
+            return o;
         }catch (Exception e){
             logger.error(requesturi + data + ISNOTJSONTYPE.get());
             throw e ;
