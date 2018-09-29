@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.plugin.configproperty.Config;
 import com.plugin.configproperty.ConfigValue;
 import com.plugin.json.Json;
@@ -88,7 +90,6 @@ public class RequestLog {
     private void getParameter(ProceedingJoinPoint pjp, Object proceed, Long excuteTime) {
         Map<String, Object> linkMap = new LinkedHashMap<>();
         HttpServletRequest request = getRequest(pjp);
-        Gson gson = new Gson();
         if (request != null) {
             // ip
             String ip = request.getHeader("X-real-IP");
@@ -100,15 +101,19 @@ public class RequestLog {
              * 原始body
              * {@link com.plugin.javawidget.driven.resolvers.JsonResolverImpl#resolveArgument}
              */
-            final Object attribute = request.getAttribute(HTTPSERVLETREQUEST.get());
-            //获取到解析完成的参数
-            Object[] args = pjp.getArgs();
+            final String attribute = (String)request.getAttribute(HTTPSERVLETREQUEST.get());
+            /**
+             * 获取到解析完成的参数，此对象获取值是共享
+             */
+            //TODO 2018.09.28 注意获取的对象全局共享
+            /*Object[] args = pjp.getArgs();
             if (args != null && args.length > 0) {
                 for (Object object : args) {
+                    //输入
                     linkMap.put("requestBody",object);
                 }
-            }
-            linkMap.put("jsonResolver",attribute);
+            }*/
+            linkMap.put("requestBody",new JsonParser().parse(attribute).getAsJsonObject());
             linkMap.put("responseBody", proceed);
             String OS = request.getHeader("User-Agent");
             linkMap.put("OS", OS);

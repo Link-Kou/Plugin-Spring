@@ -54,6 +54,10 @@ public class JsonResolverImpl implements HandlerMethodArgumentResolver {
     @ConfigValue(@Value("${SystemMsgEnums.HTTPSERVLETREQUEST.msg}"))
     private transient Config<String> HTTPSERVLETREQUEST;
 
+    @ConfigValue(@Value("${SystemMsgEnums.ERROR.REDISLOCKAOPIMPL.ISNOTJSONTYPE.msg}"))
+    private transient Config<String> ISNOTJSONTYPE;
+
+
 
     private class json extends Json {
         @Override
@@ -78,7 +82,11 @@ public class JsonResolverImpl implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) {
         //转换的类型
-        final String methodname = ((ServletWebRequest) nativeWebRequest).getHttpMethod().name();
+
+        HttpServletRequest servletRequest = (HttpServletRequest)nativeWebRequest.getNativeRequest(HttpServletRequest.class);
+        final String methodname =  servletRequest.getMethod();
+        final String requesturi =  servletRequest.getRequestURI();
+
         boolean inHttpMethod = false;
         for (String httpMethod : HttpMethod) {
             if (httpMethod.equals(methodname)) {
@@ -86,12 +94,12 @@ public class JsonResolverImpl implements HandlerMethodArgumentResolver {
             }
         }
         if (!inHttpMethod) {
-            final String s = HTTPMETHOD.get() + methodname;
+            final String s = requesturi + HTTPMETHOD.get() + methodname;
             logger.error(s);
             throw new IllegalArgumentException(s);
         }
 
-        HttpServletRequest servletRequest = (HttpServletRequest)nativeWebRequest.getNativeRequest(HttpServletRequest.class);
+
         ServletServerHttpRequest inputMessage = new ServletServerHttpRequest(servletRequest);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         EmptyBodyCheckingHttpInputMessage emptyBodyCheckingHttpInputMessage;
@@ -108,7 +116,12 @@ public class JsonResolverImpl implements HandlerMethodArgumentResolver {
         }
         String data = new String(baos.toByteArray(), StandardCharsets.UTF_8);
         servletRequest.setAttribute(HTTPSERVLETREQUEST.get(),data);
-        return new json().fromJson(data, methodParameter.getGenericParameterType());
+        try {
+            return new json().fromJson(data, methodParameter.getGenericParameterType());
+        }catch (Exception e){
+            logger.error(requesturi + data + ISNOTJSONTYPE.get());
+            throw e ;
+        }
     }
 
 
