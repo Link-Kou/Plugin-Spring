@@ -36,7 +36,7 @@ public class MyDate implements GsonDate<MyDate> {
     }
 
     public MyDate(java.sql.Date date) {
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate localDate = date.toLocalDate();
         datestr = datetimeformatter.format(localDate);
     }
 
