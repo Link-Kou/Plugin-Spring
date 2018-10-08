@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.plugin</groupId>
     <artifactId>JavaWidget</artifactId>
-    <version>1.4.3</version>
+    <version>1.4.6</version>
     <packaging>jar</packaging>
 
     <name>Plugin-JavaWidget-${project.version}</name>
@@ -218,13 +218,19 @@
             <groupId>com.plugin</groupId>
             <artifactId>Json</artifactId>
             <version>1.0.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.plugin</groupId>
+                    <artifactId>JavaWidget</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
-
+        <!--统一拦截器包-->
         <dependency>
             <groupId>com.plugin</groupId>
             <artifactId>Interceptor</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.plugin</groupId>

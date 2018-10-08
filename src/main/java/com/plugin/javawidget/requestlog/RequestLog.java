@@ -1,6 +1,8 @@
 package com.plugin.javawidget.requestlog;
 
+import java.lang.annotation.Annotation;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,8 +16,10 @@ import com.plugin.configproperty.ConfigValue;
 import com.plugin.json.Json;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,6 +95,18 @@ public class RequestLog {
         Map<String, Object> linkMap = new LinkedHashMap<>();
         HttpServletRequest request = getRequest(pjp);
         if (request != null) {
+            //当前方法对象描述
+            final Signature signature = pjp.getSignature();
+            final MethodSignature methodSignature = (MethodSignature) signature;
+            String signaturename = pjp.getSignature().toString();
+            //class上的注解
+            final Annotation[] annotations = methodSignature.getMethod().getDeclaringClass().getAnnotations();
+            linkMap.put("DeclaringClassAnnotations", Arrays.toString(annotations));
+            //方法上面的注解
+            final Annotation[] annotations1 = methodSignature.getMethod().getAnnotations();
+            linkMap.put("MethodAnnotations", Arrays.toString(annotations1));
+            linkMap.put("signature", signaturename);
+            linkMap.put("url",request.getRequestURI());
             // ip
             String ip = request.getHeader("X-real-IP");
             linkMap.put("ip", StringUtils.isEmpty(ip) ? "-" : ip);
@@ -119,7 +135,6 @@ public class RequestLog {
                 linkMap.put("requestBody",asJsonObject);
             }catch (Exception e){
                 linkMap.put("requestBody",attribute);
-                e.printStackTrace();
             }
             linkMap.put("responseBody", proceed);
             String OS = request.getHeader("User-Agent");
@@ -129,14 +144,10 @@ public class RequestLog {
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         linkMap.put("operatingTime", simpleDateFormat.format(date));
-        //当前方法对象描述
-        String signature = pjp.getSignature().toString();
-        linkMap.put("signature", signature);
         // 执行时间
         linkMap.put("excuteTime", excuteTime);
         LOGGER.info(StringEscapeUtils.unescapeJson(new json().toJson(linkMap)));
     }
-
 
     /**
      * 获取到 HttpServletRequest 对象

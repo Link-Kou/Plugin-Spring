@@ -33,7 +33,11 @@ public interface RedisClient {
      */
     String set(String key, String value, String nxxx, String expx, long time);
 
-
+    /**
+     * 获取key
+     * @param key 名称
+     * @return 无返回null 有返回值
+     */
     String get(String key);
 
     /**

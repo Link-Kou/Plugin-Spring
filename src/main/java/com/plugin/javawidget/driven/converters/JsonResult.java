@@ -104,7 +104,17 @@ public class JsonResult<T> {
      *
      * @return boolean
      */
+    @Deprecated
     public boolean getSuccess() {
+        return success;
+    }
+
+    /**
+     * 状态
+     *
+     * @return boolean
+     */
+    public boolean isSuccess() {
         return success;
     }
 
@@ -185,6 +195,7 @@ public class JsonResult<T> {
     public JsonResult(Object data, JsonResultMsg<Enum> value) {
         this.jsonResult(data, value);
     }
+
 
     /**
      * 分页，枚举配置输出

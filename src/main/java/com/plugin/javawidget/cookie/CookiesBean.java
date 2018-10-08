@@ -14,19 +14,29 @@ import java.util.Map;
 /**
  * Cookie 工具
  */
-@Deprecated
-public class CookiesUtil {
+@Component
+public class CookiesBean {
+
+
+	private HttpServletRequest request;
+
+	private HttpServletResponse response;
+
+	@Autowired
+	public CookiesBean(HttpServletRequest request, HttpServletResponse response) {
+		this.request = request;
+		this.response = response;
+	}
 
 	/**
 	 * @title:根据名字获取cookie
 	 * @description:
-	 * @param request
 	 * @param name
 	 * @return
 	 * @date:2017年11月13日
 	 */
-	public static String getCookieByName(HttpServletRequest request,String name) {
-		Map<String, Cookie> cookieMap = readCookieMap(request);
+	public String getCookieByName(String name) {
+		Map<String, Cookie> cookieMap = readCookieMap();
 		if (cookieMap.containsKey(name)) {
 			Cookie cookie = (Cookie) cookieMap.get(name);
 			return cookie.getValue();
@@ -39,12 +49,11 @@ public class CookiesUtil {
 	/**
 	 * @title:将cookie封装到Map里面
 	 * @description:
-	 * @param request
 	 * @return
 	 * @date:2017年11月13日
 	 */
-	private static Map<String, Cookie> readCookieMap(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
+	private Map<String, Cookie> readCookieMap() {
+		Cookie[] cookies = this.request.getCookies();
 		Map<String, Cookie> cookieMap = new HashMap<String, Cookie>(16);
 		if (null != cookies) {
 			for (Cookie cookie : cookies) {
@@ -57,14 +66,13 @@ public class CookiesUtil {
 	/**
 	 * @title:保存Cookies
 	 * @description:
-	 * @param response
 	 * @param name
 	 * @param value
 	 * @param time
 	 * @return
 	 * @date:2017年11月13日
 	 */
-	public static HttpServletResponse setCookie(HttpServletResponse response, String name, String value, int time) {
+	public HttpServletResponse setCookie(String name, String value, int time) {
 		// new一个Cookie对象,键值对为参数
 		Cookie cookie = new Cookie(name, value);
 		// tomcat下多应用共享
@@ -79,7 +87,7 @@ public class CookiesUtil {
 		cookie.setMaxAge(time);
 		// 将Cookie添加到Response中,使之生效
 		// addCookie后，如果已经存在相同名字的cookie，则最新的覆盖旧的cookie
-		response.addCookie(cookie);
-		return response;
+		this.response.addCookie(cookie);
+		return this.response;
 	}
 }

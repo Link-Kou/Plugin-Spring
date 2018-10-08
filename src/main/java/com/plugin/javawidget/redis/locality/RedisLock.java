@@ -20,6 +20,8 @@ public class RedisLock {
 
     private final static String LOCK_SUCCESS = "OK";
 
+    private final static String LOCK_KEY = "REDIS:LOCK:REDISLOCK";
+
     private final static String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
 
     private static final Long RELEASE_SUCCESS = 1L;
@@ -27,8 +29,8 @@ public class RedisLock {
     /**
      * 分布式局部锁
      *
-     * @param key   锁名称
-     * @param value 锁值
+     * @param key                锁名称
+     * @param value              锁值
      * @param functionInitialize 抢到锁执行
      * @param unlock             解锁失败
      * @param <T>
@@ -37,10 +39,16 @@ public class RedisLock {
     public static <T> T lock(String key, String value, FunctionLockInitialize<T> functionInitialize, FunctionLockInitialize<T> unlock) {
         RedisClient redisClient = (new SpringContextUtil()).getBean(RedisClient.class);
         try {
-            return functionInitialize.get(LOCK_SUCCESS.equals(redisClient.set(Optional.ofNullable(key).orElse(LOCK_SUCCESS), Optional.ofNullable(key).orElse(LOCK_SUCCESS), "NX", "EX", 60L)));
-        }catch (Exception e){
-            e.printStackTrace();
-            final Long del = redisClient.del(script, Collections.singletonList(key), Collections.singletonList(value));
+            return functionInitialize.get(
+                    LOCK_SUCCESS.equalsIgnoreCase(
+                            redisClient.set(Optional.ofNullable(key).orElse(LOCK_KEY),
+                                    Optional.ofNullable(value).orElse(LOCK_KEY), "NX", "EX", 60L)
+                    )
+            );
+        } catch (Exception e) {
+            final Long del = redisClient.del(script,
+                    Collections.singletonList(Optional.ofNullable(key).orElse(LOCK_KEY)),
+                    Collections.singletonList(Optional.ofNullable(value).orElse(LOCK_KEY)));
             return unlock.get(del.equals(RELEASE_SUCCESS));
         }
     }

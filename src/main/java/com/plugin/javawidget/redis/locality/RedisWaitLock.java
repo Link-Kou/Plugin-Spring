@@ -15,6 +15,8 @@ public class RedisWaitLock {
 
     private final static String LOCK_SUCCESS = "OK";
 
+    private final static String LOCK_KEY = "REDIS:LOCK:REDISWAITLOCK";
+
     private final static String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
 
     private static final Long RELEASE_SUCCESS = 1L;
@@ -37,7 +39,10 @@ public class RedisWaitLock {
                 new FutureTask<Boolean>(() -> {
                     //真正的任务在这里执行，这里的返回值类型为String，可以为任意类型
                     while (true) {
-                        if (LOCK_SUCCESS.equals(redisClient.set(Optional.ofNullable(key).orElse(LOCK_SUCCESS), Optional.ofNullable(key).orElse(LOCK_SUCCESS), "NX", "EX", 60L))) {
+                        final boolean b = LOCK_SUCCESS.equalsIgnoreCase(
+                                redisClient.set(Optional.ofNullable(key).orElse(LOCK_KEY),
+                                        Optional.ofNullable(value).orElse(LOCK_KEY), "NX", "EX", 60L));
+                        if (b) {
                             return true;
                         }
                     }
@@ -48,7 +53,9 @@ public class RedisWaitLock {
             return functionInitialize.get(future.get(5000, TimeUnit.MILLISECONDS));
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
-            final Long del = redisClient.del(script, Collections.singletonList(key), Collections.singletonList(value));
+            final Long del = redisClient.del(script,
+                    Collections.singletonList(Optional.ofNullable(key).orElse(LOCK_KEY)),
+                    Collections.singletonList(Optional.ofNullable(value).orElse(LOCK_KEY)));
             return unlock.get(del.equals(RELEASE_SUCCESS));
         }
     }
