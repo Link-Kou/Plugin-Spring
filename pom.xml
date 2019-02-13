@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.plugin</groupId>
     <artifactId>JavaWidget</artifactId>
-    <version>1.4.7</version>
+    <version>1.5.8</version>
     <packaging>jar</packaging>
 
     <name>Plugin-JavaWidget-${project.version}</name>
@@ -25,7 +25,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java-version>1.8</java-version>
         <org.springframework-version>4.3.7.RELEASE</org.springframework-version>
+        <org.slf4j-version>1.7.24</org.slf4j-version>
         <org.aspectj-version>1.8.10</org.aspectj-version>
+        <org.druid-version>1.1.9</org.druid-version>
         <repository-publicip>http://192.168.5.102:18002</repository-publicip>
     </properties>
 
@@ -102,24 +104,89 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${org.springframework-version}</version>
         </dependency>
-        <!-- spring jdbc -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${org.springframework-version}</version>
-        </dependency>
+        <!-- spring test -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${org.springframework-version}</version>
             <scope>test</scope>
         </dependency>
-
+        <!-- spring jdbc -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${org.springframework-version}</version>
+            <scope>test</scope>
+        </dependency>
         <!-- mybatis 数据库操作 -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>3.4.2</version>
+        </dependency>
+        <!-- 是一个用来整合 MyBatis 和 Spring 框架的小类库 -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        <!-- mybatis是ibatis 的升级版。是一种 orm 工具，简化数据库操作 -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.40</version>
+        </dependency>
+        <!-- 阿里巴巴 数据库连接池 druid -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${org.druid-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.6.0</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${org.slf4j-version}</version>
+        </dependency>
+        <!-- 桥接：告诉Slf4j使用Log4j2 -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- 桥接：告诉commons logging使用Log4j2 -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jcl</artifactId>
+            <version>2.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.8.1</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- redis -->
@@ -128,7 +195,6 @@
             <artifactId>jedis</artifactId>
             <version>2.9.0</version>
         </dependency>
-
 
         <!-- AspectJ -->
         <dependency>
@@ -156,7 +222,6 @@
             <version>0.9.13</version>
         </dependency>
 
-
         <!-- 加密 -->
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <dependency>
@@ -168,6 +233,14 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.54</version>
+        </dependency>
+
+        <!-- 上传文件 -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.3.2</version>
+            <scope>test</scope>
         </dependency>
 
         <!--扩展-->
@@ -230,7 +303,7 @@
         <dependency>
             <groupId>com.plugin</groupId>
             <artifactId>Interceptor</artifactId>
-            <version>1.0.1</version>
+            <version>1.1.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.plugin</groupId>

@@ -14,7 +14,6 @@ import java.util.Map;
 /**
  * Cookie 工具
  */
-@Component
 public class CookiesBean {
 
 

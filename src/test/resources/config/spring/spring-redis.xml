@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 引入配置文件 -->
+    <context:property-placeholder location="classpath:config/properties/*.properties"/>
+
+    <!--Redis连接池参数配置-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!--可用连接实例的最大数目，默认值为8 -->
+        <property name="maxTotal" value="${redis.maxIdle}"/>
+        <!--等待可用连接的最大时间 毫秒-->
+        <property name="maxWaitMillis" value="${redis.maxWaitMillis}"/>
+        <!--在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的-->
+        <property name="testOnBorrow" value="${redis.testOnBorrow}"/>
+        <!--Idle时进行连接扫描 -->
+        <property name="testWhileIdle" value="${redis.testWhileIdle}"/>
+        <!--控制一个pool最多有多少个状态为idle(空闲的)的jedis实例，默认值也是8。-->
+        <property name="maxIdle" value="${redis.maxIdle}"/>
+        <!--表示idle object evitor两次扫描之间要sleep的毫秒数-->
+        <property name="timeBetweenEvictionRunsMillis" value="${redis.timeBetweenEvictionRunsMillis}"/>
+        <!--表示idle object evitor每次扫描的最多的对象数-->
+        <property name="numTestsPerEvictionRun" value="${redis.numTestsPerEvictionRun}"/>
+        <!--表示一个对象至少停留在idle状态的最短时间 毫秒数-->
+        <property name="minEvictableIdleTimeMillis" value="${redis.minEvictableIdleTimeMillis}"/>
+    </bean>
+
+    <!--Redis 单机版配置-->
+    <bean id="userJedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+        <constructor-arg name="host" value="${redis.host}"/>
+        <constructor-arg name="port" value="${redis.port}" type="int"/>
+        <constructor-arg name="timeout" value="${redis.timeout}" type="int"/>
+        <constructor-arg name="password" value="${redis.password}"/>
+        <constructor-arg name="database" value="${redis.userJedisPool.database}"/>
+    </bean>
+
+    <!-- Redis集群版配置 -->
+    <!--<bean id="jedisCluster" class="redis.clients.jedis.JedisCluster" >
+        <constructor-arg>
+            <set>
+                <bean class="redis.clients.jedis.HostAndPort">
+                    <constructor-arg name="host" value="${cluster.d1.host}" />
+                    <constructor-arg name="port" value="${cluster.d1.port}" />
+                </bean>
+                <bean class="redis.clients.jedis.HostAndPort">
+                    <constructor-arg name="host" value="${cluster.d2.host}" />
+                    <constructor-arg name="port" value="${cluster.d2.port}" />
+                </bean>
+                <bean class="redis.clients.jedis.HostAndPort">
+                    <constructor-arg name="host" value="${cluster.d3.host}" />
+                    <constructor-arg name="port" value="${cluster.d3.port}" />
+                </bean>
+                <bean class="redis.clients.jedis.HostAndPort">
+                    <constructor-arg name="host" value="${cluster.d4.host}" />
+                    <constructor-arg name="port" value="${cluster.d4.port}" />
+                </bean>
+                <bean class="redis.clients.jedis.HostAndPort">
+                    <constructor-arg name="host" value="${cluster.d5.host}" />
+                    <constructor-arg name="port" value="${cluster.d5.port}" />
+                </bean>
+                <bean class="redis.clients.jedis.HostAndPort">
+                    <constructor-arg name="host" value="${cluster.d6.host}" />
+                    <constructor-arg name="port" value="${cluster.d6.port}" />
+                </bean>
+            </set>
+        </constructor-arg>
+        <constructor-arg name="connectionTimeout" value="2000" />
+        <constructor-arg name="soTimeout" value="2000" />
+        <constructor-arg name="maxAttempts" value="5" />
+        <constructor-arg name="password" value="${cluster.password}" />
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig" />
+    </bean>-->
+
+    <!-- 用于切换Redis @Autowiredprivate RedisClient jedis; -->
+    <bean class="com.plugin.javawidget.redis.RedisClientSingle" id="redisClient">
+        <property name="jedisPool" ref="userJedisPool" />
+    </bean>
+    <!--<bean class="com.plugin.javawidget.redis.RedisClientCluster" id="redisClient">
+        <property name="jedisCluster" ref="jedisCluster" />
+    </bean>-->
+
+</beans>

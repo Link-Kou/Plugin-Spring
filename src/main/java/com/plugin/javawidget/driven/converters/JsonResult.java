@@ -120,12 +120,10 @@ public class JsonResult<T> {
 
     /**
      * 数据
-     *
-     * @param <E> 转换对象
      * @return E
      */
-    public <E> E getData() {
-        return (E) this.data;
+    public T getData() {
+        return this.data;
     }
 
     /**

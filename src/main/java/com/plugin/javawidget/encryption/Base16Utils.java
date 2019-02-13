@@ -15,9 +15,9 @@ public class Base16Utils {
 		return encode(bin.getBytes());
 	}
 
-	/* *
+	/**
 	 * 这里我们可以将byte转换成int，然后利用Integer.toHexString(int)
-	 *来转换成16进制字符串。
+	 * 来转换成16进制字符串。
 	 */
 	public static String encode(byte[] inbuf) {
 		StringBuffer strBuf = new StringBuffer();

@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * 对象解析
  * @author lk
  * @date 2018/9/25 17:02
  */

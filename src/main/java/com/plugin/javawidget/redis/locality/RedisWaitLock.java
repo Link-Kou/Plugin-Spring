@@ -24,7 +24,7 @@ public class RedisWaitLock {
     private static ExecutorService exec = Executors.newFixedThreadPool(1000);
 
     /**
-     * 分布式局部锁
+     * 分布式局部锁-等待锁
      *
      * @param key                锁名称
      * @param value              锁值
