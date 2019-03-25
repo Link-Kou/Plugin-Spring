@@ -1,4 +1,4 @@
-package com.plugin.javawidget;
+package com.plugin.javawidgetTest.jooq;
 
 /**
  * @author lk

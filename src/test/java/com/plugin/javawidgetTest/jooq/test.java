@@ -1,4 +1,4 @@
-package com.plugin.javawidget;
+package com.plugin.javawidgetTest.jooq;
 
 import com.plugin.javawidget.driven.converters.JsonResult;
 import com.plugin.javawidget.enums.SystemMsgEnums;
@@ -9,12 +9,8 @@ import org.jooq.lambda.tuple.Tuple3;
 import org.junit.Test;
 
 import java.lang.reflect.Type;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.jooq.lambda.tuple.Tuple.tuple;
 
