@@ -3,12 +3,7 @@ package com.plugin.javawidget.mybatisplugins.Type;
 
 import com.google.gson.JsonElement;
 import com.plugin.json.serializer.GsonDate;
-
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -88,7 +83,7 @@ public class MyDate implements GsonDate<MyDate> {
      */
     @Override
     public Date getDate() {
-        return Date.from(LocalDateTime.parse(this.datestr, datetimeformatter).atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(LocalDate.parse(datestr, datetimeformatter).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 
     /**
