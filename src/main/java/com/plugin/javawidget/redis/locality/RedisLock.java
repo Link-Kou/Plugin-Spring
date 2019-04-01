@@ -18,7 +18,7 @@ import java.util.Optional;
  */
 public class RedisLock {
 
-    private static Logger logger = LoggerFactory.getLogger("RedisLogger");
+    private static final Logger LOGGER = LoggerFactory.getLogger(RedisLock.class);
 
     private final static String LOCK_SUCCESS = "OK";
 
@@ -44,7 +44,7 @@ public class RedisLock {
     public static <T> T lock(String key, String value, FunctionLockInitialize<T> functionInitialize, FunctionLockInitialize<T> unlock) {
         RedisClient redisClient = (new SpringContextUtil()).getBean(RedisClient.class);
         try {
-            logger.debug(String.format("key:%s,value:%s 抢锁中", key, value));
+            LOGGER.debug(String.format("key:%s,value:%s 抢锁中", key, value));
             return functionInitialize.get(LOCK_SUCCESS.equalsIgnoreCase(
                     redisClient.set(
                             Optional.ofNullable(key).orElse(LOCK_KEY),
@@ -57,7 +57,7 @@ public class RedisLock {
             final Long del = redisClient.del(script,
                     Collections.singletonList(Optional.ofNullable(key).orElse(LOCK_KEY)),
                     Collections.singletonList(Optional.ofNullable(value).orElse(LOCK_KEY)));
-            logger.debug(String.format("key:%s,value:%s 解锁失败", key, value));
+//            logger.debug(String.format("key:%s,value:%s 解锁失败", key, value));
             return unlock.get(del.equals(RELEASE_SUCCESS));
         }
     }
@@ -74,7 +74,6 @@ public class RedisLock {
      * @return
      * @deprecated 可以使用但是不推荐
      */
-    @Deprecated
     public static <T> T lock(String key, String value, FunctionLockInitialize<T> functionInitialize, FunctionLockInitialize<T> functionInitializefailure, FunctionLockInitialize<T> unlock) {
         RedisClient redisClient = (new SpringContextUtil()).getBean(RedisClient.class);
         try {
@@ -87,17 +86,22 @@ public class RedisLock {
                             60L)
             );
             if (b) {
-                logger.debug(String.format("key:%s,value:%s 锁成功", key, value));
-                return functionInitialize.get(b);
+                LOGGER.debug(String.format("key:%s,value:%s 锁成功", key, value));
+                T object = functionInitialize.get(b);
+                redisClient.del(script,
+                        Collections.singletonList(Optional.ofNullable(key).orElse(LOCK_KEY)),
+                        Collections.singletonList(Optional.ofNullable(value).orElse(LOCK_KEY)));
+                return object;
             } else {
-                logger.debug(String.format("key:%s,value:%s 锁定中", key, value));
+                LOGGER.debug(String.format("key:%s,value:%s 锁定中", key, value));
                 return functionInitializefailure.get(b);
             }
         } catch (Exception e) {
+            LOGGER.error("", e);
             final Long del = redisClient.del(script,
                     Collections.singletonList(Optional.ofNullable(key).orElse(LOCK_KEY)),
                     Collections.singletonList(Optional.ofNullable(value).orElse(LOCK_KEY)));
-            logger.debug(String.format("key:%s,value:%s 解锁失败", key, value));
+//            logger.debug(String.format("key:%s,value:%s 解锁失败", key, value));
             return unlock.get(del.equals(RELEASE_SUCCESS));
         }
     }
@@ -123,17 +127,17 @@ public class RedisLock {
                             60L)
             );
             if (b) {
-                logger.debug(String.format("key:%s,value:%s 锁成功", key, value));
+                LOGGER.debug(String.format("key:%s,value:%s 锁成功", key, value));
                 return lockResult.success();
             } else {
-                logger.debug(String.format("key:%s,value:%s 锁定中", key, value));
+                LOGGER.debug(String.format("key:%s,value:%s 锁定中", key, value));
                 return lockResult.failure();
             }
         } catch (Exception e) {
             final Long del = redisClient.del(script,
                     Collections.singletonList(Optional.ofNullable(key).orElse(LOCK_KEY)),
                     Collections.singletonList(Optional.ofNullable(value).orElse(LOCK_KEY)));
-            logger.debug(String.format("key:%s,value:%s 解锁失败", key, value));
+            LOGGER.debug(String.format("key:%s,value:%s 解锁失败", key, value));
             return lockResult.unlock(del.equals(RELEASE_SUCCESS));
         }
     }

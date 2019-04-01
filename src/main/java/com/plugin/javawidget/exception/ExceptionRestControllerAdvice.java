@@ -31,7 +31,7 @@ public class ExceptionRestControllerAdvice {
 	@ExceptionHandler(value = Throwable.class)
 	public JsonResult error(Throwable e) {
 		logger.error(" Throwable: " + e.getMessage(), e);
-		return new JsonResult(e);
+		return new JsonResult(SystemMsgEnums.OPS_FAILURE);
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class ExceptionRestControllerAdvice {
 	@ExceptionHandler(value = Exception.class)
 	public JsonResult scheduleError(Exception e) throws Exception {
 		logger.error(" Exception: " + e.getMessage(), e);
-		return new JsonResult(e);
+		return new JsonResult(SystemMsgEnums.OPS_FAILURE);
 	}
 
 

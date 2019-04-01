@@ -76,7 +76,27 @@ public enum SystemMsgEnums implements JsonResultMsg<Enum> {
 	 * 数据被其它地方引用
 	 */
 	@JsonResultValue(Code = @Value("${SystemMsgEnums.OPS_Occupied.code}"),Msg = @Value("${SystemMsgEnums.OPS_Occupied.msg}") )
-	OPS_Occupied(false);
+	OPS_Occupied(false),
+
+	/**
+	 * 操作无权限
+	 */
+	@JsonResultValue(Code = @Value("${SystemMsgEnums.OPS_NO_PERMISSION.code}"),Msg = @Value("${SystemMsgEnums.OPS_NO_PERMISSION.msg}") )
+	OPS_NO_PERMISSION(false),
+
+	/**
+	 * 接口不存在或已删除
+	 */
+	@JsonResultValue(Code = @Value("${SystemMsgEnums.OPS_URL_NOT_EXIST.code}"),Msg = @Value("${SystemMsgEnums.OPS_URL_NOT_EXIST.msg}") )
+	OPS_URL_NOT_EXIST(false),
+
+	/**
+	 * 接口已禁用
+	 */
+	@JsonResultValue(Code = @Value("${SystemMsgEnums.OPS_URL_IS_NOT_EFFECT.code}"),Msg = @Value("${SystemMsgEnums.OPS_URL_IS_NOT_EFFECT.msg}") )
+	OPS_URL_IS_NOT_EFFECT(false)
+
+	;
 
 	private boolean success;
 

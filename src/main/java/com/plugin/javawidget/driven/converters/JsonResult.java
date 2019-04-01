@@ -31,6 +31,8 @@ public class JsonResult<T> {
 
     private static final String CODENAME = "code";
     private static final String MSGNAME = "msg";
+    private static final String DATANAME = "data";
+    private static final String SUCCESSNAME = "success";
 
     /**
      * 失败
@@ -284,6 +286,8 @@ public class JsonResult<T> {
             String matchermsg = p.matcher(msg.value()).replaceAll("");
             hashMap.put(CODENAME, new ConfigUtils(matchercode).getInteger());
             hashMap.put(MSGNAME, new ConfigUtils(matchermsg).getString());
+            hashMap.put(DATANAME, this.data);
+            hashMap.put(SUCCESSNAME, this.success);
             return hashMap;
         }else {
             return hashMap;
