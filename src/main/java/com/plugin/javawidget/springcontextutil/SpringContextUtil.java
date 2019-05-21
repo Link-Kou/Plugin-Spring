@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * spring context 实现Mybatis DAO、等加载
  * 需要在初始化的加载此列
- *<context:component-scan base-package="com.DJPay" />
+ * <context:component-scan base-package="com.**" />
  */
 @Component
 public class SpringContextUtil implements ApplicationContextAware {

@@ -56,7 +56,7 @@ public class RedisLog {
             	stringBuffer.replace(stringBuffer.lastIndexOf(",") , stringBuffer.lastIndexOf(",")+1, "");
 			}
         }
-        LOGGER.info("djcpsRedisLogger\ndjcpsRedisLogger==> Redis_Preparing: {} \ndjcpsRedisLogger==> Redis_Parameters: {} \ndjcpsRedisLogger<== Redis_Result: {}" ,pjp.getSignature(),stringBuffer.toString(), proceed);
+        LOGGER.info("RedisLogger\nRedisLogger==> Redis_Preparing: {} \nRedisLogger==> Redis_Parameters: {} \nRedisLogger<== Redis_Result: {}" ,pjp.getSignature(),stringBuffer.toString(), proceed);
         return proceed;
     }
 
