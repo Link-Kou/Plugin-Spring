@@ -25,11 +25,11 @@
     <mvc:annotation-driven>
         <!--输入解析-->
         <mvc:argument-resolvers>
-            <bean class="com.plugin.javawidget.driven.resolvers.JsonResolverImpl"/>
+            <bean class="com.linkkou.spring.driven.resolvers.JsonResolverImpl"/>
         </mvc:argument-resolvers>
         <!--拦截输出-->
         <mvc:message-converters>
-            <bean class="com.plugin.javawidget.driven.converters.JsonHttpMessageConverter"/>
+            <bean class="com.linkkou.spring.driven.converters.JsonHttpMessageConverter"/>
         </mvc:message-converters>
     </mvc:annotation-driven>
 

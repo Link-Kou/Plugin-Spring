@@ -1,7 +1,7 @@
 package com.plugin.javawidgetTest.redis;
 
-import com.plugin.javawidget.redis.locality.LockResult;
-import com.plugin.javawidget.redis.locality.RedisLock;
+import com.linkkou.spring.redis.locality.LockResult;
+import com.linkkou.spring.redis.locality.RedisLock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

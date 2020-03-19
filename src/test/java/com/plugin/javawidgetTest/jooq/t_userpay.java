@@ -26,4 +26,12 @@ public class t_userpay {
         this.useramount = useramount;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "t_userpay{" +
+                "userid='" + userid + '\'' +
+                ", useramount='" + useramount + '\'' +
+                '}';
+    }
 }

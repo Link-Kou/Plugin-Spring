@@ -78,10 +78,10 @@
     </bean>-->
 
     <!-- 用于切换Redis @Autowiredprivate RedisClient jedis; -->
-    <bean class="com.plugin.javawidget.redis.RedisClientSingle" id="redisClient">
+    <bean class="com.linkkou.spring.redis.RedisClientSingle" id="redisClient">
         <property name="jedisPool" ref="userJedisPool" />
     </bean>
-    <!--<bean class="com.plugin.javawidget.redis.RedisClientCluster" id="redisClient">
+    <!--<bean class="RedisClientCluster" id="redisClient">
         <property name="jedisCluster" ref="jedisCluster" />
     </bean>-->
 

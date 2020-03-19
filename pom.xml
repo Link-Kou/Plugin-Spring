@@ -4,19 +4,48 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.plugin</groupId>
-    <artifactId>JavaWidget</artifactId>
-    <version>1.6.8</version>
+
+    <groupId>com.github.link-kou</groupId>
+    <artifactId>spring</artifactId>
     <packaging>jar</packaging>
+    <version>1.0.0</version>
+    <name>Plugin-Spring-${project.version}</name>
+    <url>https://github.com/Link-Kou/Plugin-Spring</url>
 
-    <name>Plugin-JavaWidget-${project.version}</name>
-    <url>http://maven.apache.org</url>
+    <description>ConfigPropertyPlugin</description>
 
-    <description>Java 公共组件</description>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <email>chinacclk@gmail.com</email>
+            <name>Link-Kou</name>
+            <url>https://github.com/Link-Kou/Plugin-Spring</url>
+            <id>Link-Kou</id>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <url>https://github.com/Link-Kou/Plugin-Spring/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <scm>
+        <url>https://github.com/Link-Kou/Plugin-Spring</url>
+        <connection>scm:git:https://git@github.com/Link-Kou/Plugin-Spring.git</connection>
+    </scm>
+
     <inceptionYear>2017</inceptionYear>
+
     <organization>
-        <name>Java 公共组件-来源:方遒</name>
-        <url>https://www.localhost.com</url>
+        <name>Link-Kou</name>
+        <url>https://github.com/Link-Kou/Plugin-Spring</url>
     </organization>
 
     <properties>
@@ -33,41 +62,34 @@
 
     <repositories>
         <repository>
-            <id>in-project</id>
-            <name>In Project Repo</name>
-            <url>file://${project.basedir}/lib</url>
-        </repository>
-        <repository>
-            <id>public maven</id>
-            <name>public maven</name>
-            <url>${repository-publicip}/nexus/repository/maven-public</url>
-        </repository>
-        <repository>
             <id>alimaven</id>
             <name>aliyun maven</name>
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>in-project</id>
+            <name>In Project Repo</name>
+            <url>file://${project.basedir}/lib</url>
+        </repository>
+        <!--<repository>
+            <id>public maven</id>
+            <name>public maven</name>
+            <url>${repository-publicip}/nexus/repository/maven-public</url>
+        </repository>-->
     </repositories>
 
-    <!--   <distributionManagement>
-           <repository>
-               <id>releases</id>
-               <name>Nexus Release Repository</name>
-               <url>${repository-ip}/repository/maven-releases/</url>
-           </repository>
-           <snapshotRepository>
-               <id>snapshots</id>
-               <name>Nexus Snapshot Repository</name>
-               <url>${repository-ip}/repository/maven-snapshots/</url>
-           </snapshotRepository>
-       </distributionManagement>-->
 
     <distributionManagement>
         <repository>
-            <id>nexus-releases</id>
-            <name>richerway_deploy</name>
-            <url>http://192.168.5.102:18002/nexus/repository/maven-releases/</url>
+            <id>oss-sonatype</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
+        <snapshotRepository>
+            <id>oss-sonatype</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <dependencies>
@@ -78,7 +100,6 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>javax</groupId>
@@ -111,50 +132,6 @@
             <version>${org.springframework-version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- spring jdbc -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${org.springframework-version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- mybatis 数据库操作 -->
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>3.4.2</version>
-        </dependency>
-        <!-- 是一个用来整合 MyBatis 和 Spring 框架的小类库 -->
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-spring</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-        <!-- mybatis是ibatis 的升级版。是一种 orm 工具，简化数据库操作 -->
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>3.4.2</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.40</version>
-        </dependency>
-        <!-- 阿里巴巴 数据库连接池 druid -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>${org.druid-version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
-            <version>2.6.0</version>
-            <scope>test</scope>
-        </dependency>
-
 
         <!-- Logging -->
         <dependency>
@@ -189,13 +166,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- redis -->
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>2.9.0</version>
-        </dependency>
-
         <!-- AspectJ -->
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -208,111 +178,13 @@
             <version>${org.aspectj-version}</version>
         </dependency>
 
-        <!--lombok-->
+        <!-- 自定义扩展-GSON -->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.0</version>
+            <groupId>com.github.link-kou</groupId>
+            <artifactId>gson</artifactId>
+            <version>1.0.2</version>
         </dependency>
 
-        <!--java数据对象关联查询框架-->
-        <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jool-java-8</artifactId>
-            <version>0.9.13</version>
-        </dependency>
-
-        <!-- 加密 -->
-        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.54</version>
-        </dependency>
-
-        <!-- 上传文件 -->
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.3.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!--扩展-->
-        <dependency>
-            <!--统一配置-->
-            <groupId>com.plugin</groupId>
-            <artifactId>ConfigProperty</artifactId>
-            <version>1.0.5</version>
-            <exclusions>
-                <!-- Exclude Commons Logging in favor of SLF4j -->
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!--统一HTTP请求-->
-        <dependency>
-            <groupId>com.plugin</groupId>
-            <artifactId>HttpRequest</artifactId>
-            <version>3.0.9</version>
-        </dependency>
-
-        <!--统一互调-->
-        <dependency>
-            <groupId>com.plugin</groupId>
-            <artifactId>SpacerImport</artifactId>
-            <version>1.3.4</version>
-        </dependency>
-
-        <!--统一数据构建-->
-        <dependency>
-            <groupId>com.plugin</groupId>
-            <artifactId>DataBulid</artifactId>
-            <version>3.0.8</version>
-        </dependency>
-
-        <!--统一数据校验-->
-        <dependency>
-            <groupId>com.plugin</groupId>
-            <artifactId>AnnotationValidate</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-
-        <!--统一JSON包-->
-        <dependency>
-            <groupId>com.plugin</groupId>
-            <artifactId>Json</artifactId>
-            <version>1.0.5</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.plugin</groupId>
-                    <artifactId>JavaWidget</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!--统一拦截器包-->
-        <dependency>
-            <groupId>com.plugin</groupId>
-            <artifactId>Interceptor</artifactId>
-            <version>1.1.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.plugin</groupId>
-                    <artifactId>JavaWidget</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!--扩展-->
 
     </dependencies>
 
@@ -323,16 +195,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.8.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <!-- Disable annotation processing for ourselves. -->
-                    <!--<compilerArgument>-proc:none</compilerArgument>-->
+                    <encoding>utf-8</encoding>
+                    <compilerArgument>-proc:none</compilerArgument>
                 </configuration>
             </plugin>
             <!-- 生成sources源码包的插件 -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.0.1</version>
                 <configuration>
@@ -347,10 +220,37 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--javadoc-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <show>private</show>
+                    <nohelp>true</nohelp>
+                    <charset>UTF-8</charset>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <javadocExecutable>/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/bin/javadoc</javadocExecutable>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <additionalJOption>-Xdoclint:none</additionalJOption>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- 打包JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
                 <configuration>
                     <archive>
                         <addMavenDescriptor>true</addMavenDescriptor>
@@ -362,7 +262,21 @@
                     </archive>
                 </configuration>
             </plugin>
-
+            <!--IDEA 上传打开 签名-->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
         </plugins>
 
         <!--解决XML资源文件在代码目录下编译的时候不拷贝问题-->
@@ -379,5 +293,89 @@
         </resources>
 
     </build>
+
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>3.0.0-M1</version>
+                        <configuration>
+                            <deployAtEnd>true</deployAtEnd>
+                        </configuration>
+                    </plugin>
+                    <!-- Source -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Javadoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <configuration>
+                            <show>private</show>
+                            <nohelp>true</nohelp>
+                            <charset>UTF-8</charset>
+                            <encoding>UTF-8</encoding>
+                            <docencoding>UTF-8</docencoding>
+                            <javadocExecutable>/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/bin/javadoc</javadocExecutable>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- GPG -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <distributionManagement>
+                <repository>
+                    <id>oss-sonatype</id>
+                    <name>Nexus Release Repository</name>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>oss-sonatype</id>
+                    <name>Sonatype Nexus Snapshots</name>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 
 </project>

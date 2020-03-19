@@ -1,15 +1,18 @@
 package com.plugin.javawidgetTest.jooq;
 
-import com.plugin.javawidget.driven.converters.JsonResult;
-import com.plugin.javawidget.enums.SystemMsgEnums;
-import com.plugin.json.Json;
+import com.google.gson.Gson;
+import com.linkkou.gson.processor.GsonAutowired;
+import com.linkkou.spring.driven.converters.JsonResult;
+import com.linkkou.spring.enums.SystemMsgEnums;
 import org.jooq.lambda.Seq;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple3;
 import org.junit.Test;
 
-import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.jooq.lambda.tuple.Tuple.tuple;
@@ -18,16 +21,8 @@ import static org.jooq.lambda.tuple.Tuple.tuple;
 public class test {
 
 
-    private class json extends Json {
-
-        protected <T> T fromJson(String json, Type type) {
-            return super.fromJson(json, type);
-        }
-
-        protected String toJson(Object src) {
-            return super.toJson(src);
-        }
-    }
+    @GsonAutowired
+    private Gson gson;
 
 
     @Test
@@ -89,11 +84,11 @@ public class test {
                 )
                 .collect(Collectors.toList());
         collect.forEach(x -> {
-                    System.out.print(x.getUserid());
-                    System.out.print(x.getUsername());
-                    System.out.print(x.getCarname());
-                    System.out.println(x.getUseramount());
-                });
+            System.out.print(x.getUserid());
+            System.out.print(x.getUsername());
+            System.out.print(x.getCarname());
+            System.out.println(x.getUseramount());
+        });
     }
 
     @Test
@@ -138,8 +133,8 @@ public class test {
         );
 
         s1.leftOuterJoin(s2, (t, u) -> Objects.equals(t.getUserid(), u.getUserid()))
-                .leftOuterJoin(s3,(t,u) -> Objects.equals(t.v1.getUserid(),u.getUserid()))
-                .map(t -> tuple(t.v1.v1, t.v1.v2,t.v2))
+                .leftOuterJoin(s3, (t, u) -> Objects.equals(t.v1.getUserid(), u.getUserid()))
+                .map(t -> tuple(t.v1.v1, t.v1.v2, t.v2))
                 .forEach((x) -> {
                     System.out.println(x.v1.getUserid());
                     System.out.println(
@@ -174,9 +169,9 @@ public class test {
         );
 
         s1.rightOuterJoin(s2, (t, u) -> Objects.equals(t.getUserid(), u.getUserid()))
-                .rightOuterJoin(s3,(t,u) -> Objects.equals(t.v1.getUserid(),u.getUserid()))
+                .rightOuterJoin(s3, (t, u) -> Objects.equals(t.v1.getUserid(), u.getUserid()))
                 //t.v1有为空的情况
-                .map(t -> tuple(t.v1 == null ? null : t.v1.v1, t.v1 == null ?  null : t.v1.v2,t.v2))
+                .map(t -> tuple(t.v1 == null ? null : t.v1.v1, t.v1 == null ? null : t.v1.v2, t.v2))
                 .forEach((x) -> {
                     System.out.println(
                             Optional.ofNullable(x.v1).orElse(new t_userinfo()).getUserid());
@@ -187,5 +182,33 @@ public class test {
                             Optional.ofNullable(x.v3).orElse(new t_userpay()).getUseramount()
                     );
                 });
+    }
+
+
+    @Test
+    public void GROUPBY() {
+        /**
+         * 场景:
+         * 查询出来三张表的数据进行合并,三张表中都有userid
+         */
+        Seq<t_userinfo> s1 = Seq.of(
+                new t_userinfo().setUserid("123").setUsername("小米"),
+                //new t_userinfo().setUserid("345").setUsername("小明"),
+                new t_userinfo().setUserid("678").setUsername("小李")
+        );
+        Seq<t_usercar> s2 = Seq.of(
+                new t_usercar().setUserid("123").setCarname("宝马"),
+                new t_usercar().setUserid("345").setCarname("奥迪")
+        );
+
+
+       /* s1.leftOuterJoin(s2, (t, u) -> Objects.equals(t.getUserid(), u.getUserid()))
+                .forEach(x -> System.out.println(String.format("%s %s", x.v1.toString(), x.v2)));*/
+
+        s1.leftOuterJoin(s2, (t, u) -> Objects.equals(t.getUserid(), u.getUserid()))
+                .map(x -> x.v2)
+                .groupBy(x -> Objects.equals(null, x))
+                .entrySet()
+                .forEach(System.out::println);
     }
 }
