@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
  * @version 1.0
  * @date 2017-12-27 20:18
  */
-public enum SystemMsgEnums implements JsonResultMsg<Enum> {
+public enum SystemMsgEnums implements JsonResultMsg {
 
 	/**
 	 * 成功
@@ -53,7 +53,6 @@ public enum SystemMsgEnums implements JsonResultMsg<Enum> {
 	@JsonResultValue(Code = @Value("${SystemMsgEnums.OPS_404.code}"),Msg = @Value("${SystemMsgEnums.OPS_404.msg}") )
 	OPS_404(false),
 
-
 	/**
 	 * 500 失败
 	 */
@@ -76,7 +75,7 @@ public enum SystemMsgEnums implements JsonResultMsg<Enum> {
 	 * 数据被其它地方引用
 	 */
 	@JsonResultValue(Code = @Value("${SystemMsgEnums.OPS_Occupied.code}"),Msg = @Value("${SystemMsgEnums.OPS_Occupied.msg}") )
-	OPS_Occupied(false),
+	OPS_OCCUPIED(false),
 
 	/**
 	 * 操作无权限

@@ -3,10 +3,10 @@ package com.linkkou.spring.requestlog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.linkkou.configproperty.Config;
+import com.linkkou.configproperty.ConfigValue;
 import com.linkkou.gson.processor.GsonAutowired;
 import com.linkkou.spring.driven.resolvers.JsonResolverImpl;
-import com.plugin.configproperty.Config;
-import com.plugin.configproperty.ConfigValue;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -29,6 +29,10 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Aop
+ * 统一请求拦截输出日志
+ */
 @Aspect
 @Component
 public class RequestLog {
@@ -38,7 +42,10 @@ public class RequestLog {
     @GsonAutowired
     private static Gson gson;
 
-    @ConfigValue(@Value("${SystemMsgEnums.HTTPSERVLETREQUEST.msg}"))
+    /**
+     * 数据存放的名称
+     */
+    @ConfigValue(value = @Value("${SystemMsgEnums.HTTPSERVLETREQUEST}"),defaultValue = "HTTPSERVLETREQUEST")
     private transient Config<String> HTTPSERVLETREQUEST;
 
 
@@ -147,7 +154,7 @@ public class RequestLog {
      * 获取到 HttpServletRequest 对象
      *
      * @param pjp
-     * @return
+     * @return HttpServletRequest
      */
     private HttpServletRequest getRequest(ProceedingJoinPoint pjp) {
         Object[] args = pjp.getArgs();

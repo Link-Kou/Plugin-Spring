@@ -2,22 +2,23 @@ package com.linkkou.spring.driven.resolvers;
 
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.linkkou.gson.processor.GsonAutowired;
-import com.plugin.configproperty.Config;
-import com.plugin.configproperty.ConfigValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.annotation.ModelFactory;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
@@ -26,10 +27,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
-import java.lang.reflect.Type;
+import java.lang.annotation.Annotation;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 自定义参数解析
@@ -46,20 +48,7 @@ public class JsonResolverImpl implements HandlerMethodArgumentResolver {
     @GsonAutowired
     private static Gson gson;
 
-    @ConfigValue(@Value("${SystemMsgEnums.ERROR.JSONRESOLVERIMPL.HTTPMETHOD.msg}"))
-    private transient Config<String> HTTPMETHOD;
-
-    @ConfigValue(@Value("${SystemMsgEnums.ERROR.JSONRESOLVERIMPL.BYTEARRAYOUTPUTSTREAM.msg}"))
-    private transient Config<String> BYTEARRAYOUTPUTSTREAM;
-
-    @ConfigValue(@Value("${SystemMsgEnums.HTTPSERVLETREQUEST.msg}"))
-    private transient Config<String> HTTPSERVLETREQUEST;
-
-    @ConfigValue(@Value("${SystemMsgEnums.ERROR.REDISLOCKAOPIMPL.ISNOTJSONTYPE.msg}"))
-    private transient Config<String> ISNOTJSONTYPE;
-
-
-    private List<String> HttpMethod = Arrays.asList("POST");
+    private List<String> httpMethod = Collections.singletonList("POST");
 
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
@@ -68,56 +57,40 @@ public class JsonResolverImpl implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) {
+    public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
         //转换的类型
-
-        HttpServletRequest servletRequest = (HttpServletRequest)nativeWebRequest.getNativeRequest(HttpServletRequest.class);
-        final String methodname =  servletRequest.getMethod();
-        final String requesturi =  servletRequest.getRequestURI();
-
+        HttpServletRequest servletRequest = (HttpServletRequest) nativeWebRequest.getNativeRequest(HttpServletRequest.class);
+        final String methodname = servletRequest.getMethod();
+        final String requesturi = servletRequest.getRequestURI();
         boolean inHttpMethod = false;
-        for (String httpMethod : HttpMethod) {
+        for (String httpMethod : httpMethod) {
             if (httpMethod.equals(methodname)) {
                 inHttpMethod = true;
             }
         }
         if (!inHttpMethod) {
-            final String s = requesturi + HTTPMETHOD.get() + methodname;
+            final String s = requesturi + methodname;
             logger.error(s);
             throw new IllegalArgumentException(s);
         }
-
-
         ServletServerHttpRequest inputMessage = new ServletServerHttpRequest(servletRequest);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        EmptyBodyCheckingHttpInputMessage emptyBodyCheckingHttpInputMessage;
-        try {
-            emptyBodyCheckingHttpInputMessage = new EmptyBodyCheckingHttpInputMessage(inputMessage);
-            InputStream d = emptyBodyCheckingHttpInputMessage.getBody();
-            int i = -1;
-            while ((i = d.read()) != -1) {
-                baos.write(i);
-            }
-        } catch (Exception e) {
-            logger.error(BYTEARRAYOUTPUTSTREAM.get());
-            throw new IllegalArgumentException(BYTEARRAYOUTPUTSTREAM.get());
+        EmptyBodyCheckingHttpInputMessage emptyBodyCheckingHttpInputMessage = new EmptyBodyCheckingHttpInputMessage(inputMessage);
+        InputStream d = emptyBodyCheckingHttpInputMessage.getBody();
+        int i = -1;
+        while ((i = d.read()) != -1) {
+            baos.write(i);
         }
         String data = new String(baos.toByteArray(), StandardCharsets.UTF_8);
-        try {
-            final Object o = gson.fromJson(data, methodParameter.getGenericParameterType());
-            servletRequest.setAttribute(HTTPSERVLETREQUEST.get(),data);
-            return o;
-        }catch (Exception e){
-            logger.error(requesturi + data + ISNOTJSONTYPE.get());
-            throw e ;
-        }
+        servletRequest.setAttribute("XXXX", data);
+        final Object o = gson.fromJson(data, methodParameter.getGenericParameterType());
+        return validated(methodParameter, modelAndViewContainer, nativeWebRequest, webDataBinderFactory, o);
     }
-
 
     /**
      * 解决 servlet的request的inputstream只能被读一次
      */
-    private class EmptyBodyCheckingHttpInputMessage{
+    private class EmptyBodyCheckingHttpInputMessage {
         private final HttpHeaders headers;
         private final InputStream body;
         private final org.springframework.http.HttpMethod method;
@@ -141,7 +114,7 @@ public class JsonResolverImpl implements HandlerMethodArgumentResolver {
                     pushbackInputStream.unread(b);
                 }
             }
-            this.method = ((HttpRequest)inputMessage).getMethod();
+            this.method = ((HttpRequest) inputMessage).getMethod();
         }
 
         public HttpHeaders getHeaders() {
@@ -157,39 +130,50 @@ public class JsonResolverImpl implements HandlerMethodArgumentResolver {
         }
     }
 
+    private Object validated(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory, Object attribute) throws Exception {
+        String name = ModelFactory.getNameForParameter(methodParameter);
+        WebDataBinder binder = webDataBinderFactory.createBinder(nativeWebRequest, attribute, name);
+        Object target = binder.getTarget();
+        if (target != null) {
+            validateIfApplicable(binder, methodParameter);
+            if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, methodParameter)) {
+                throw new BindException(binder.getBindingResult());
+            }
+        }
+        // Add resolved attribute and BindingResult at the end of the model
+        Map<String, Object> bindingResultModel = binder.getBindingResult().getModel();
+        modelAndViewContainer.removeAttributes(bindingResultModel);
+        modelAndViewContainer.addAllAttributes(bindingResultModel);
+        return binder.convertIfNecessary(binder.getTarget(), methodParameter.getParameterType(), methodParameter);
+    }
 
-    /**
-     * 分页解析支持
-     * {
-     * page:
-     * itemsPerPage:
-     * data:
-     * ......:
-     * }
-     *
-     * @param data
-     * @param typeT
-     * @return
-     */
-    @Deprecated
-    private <T> T compatiblePaginator(String data, Type[] typeT) {
-        JsonParser parser = new JsonParser();
-        JsonObject object = parser.parse(data).getAsJsonObject();
-        if (object.has("data")) {
-            return gson.fromJson(object.get("data"), typeT[0]);
-        } else {
-            return gson.fromJson(data, typeT[0]);
+    private void validateIfApplicable(WebDataBinder binder, MethodParameter methodParam) {
+        Annotation[] annotations = methodParam.getParameterAnnotations();
+        for (Annotation ann : annotations) {
+            Validated validatedAnn = AnnotationUtils.getAnnotation(ann, Validated.class);
+            if (validatedAnn != null || ann.annotationType().getSimpleName().startsWith("Valid")) {
+                Object hints = (validatedAnn != null ? validatedAnn.value() : AnnotationUtils.getValue(ann));
+                Object[] validationHints = (hints instanceof Object[] ? (Object[]) hints : new Object[]{hints});
+                binder.validate(validationHints);
+                break;
+            }
         }
     }
 
+    private boolean isBindExceptionRequired(WebDataBinder binder, MethodParameter methodParam) {
+        int i = methodParam.getParameterIndex();
+        Class<?>[] paramTypes = methodParam.getMethod().getParameterTypes();
+        boolean hasBindingResult = (paramTypes.length > (i + 1) && Errors.class.isAssignableFrom(paramTypes[i + 1]));
+        return !hasBindingResult;
+    }
 
     public JsonResolverImpl setHttpMethod(List<String> HttpMethod) {
-        this.HttpMethod = HttpMethod;
+        this.httpMethod = HttpMethod;
         return this;
     }
 
     public List<String> getHttpMethod() {
-        return this.HttpMethod;
+        return this.httpMethod;
     }
 
 

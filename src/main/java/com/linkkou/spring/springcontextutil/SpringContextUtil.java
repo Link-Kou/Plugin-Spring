@@ -53,7 +53,7 @@ public class SpringContextUtil implements ApplicationContextAware {
      * 获取类型为requiredType的对象
      *
      * @param clz
-     * @return
+     * @return T
      * @throws BeansException
      */
     public <T> T getBean(Class<T> clz) throws BeansException {

@@ -95,16 +95,10 @@
     <dependencies>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Spring -->
@@ -119,11 +113,13 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${org.springframework-version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- spring test -->
         <dependency>
@@ -138,6 +134,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${org.slf4j-version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- 桥接：告诉Slf4j使用Log4j2 -->
         <dependency>
@@ -171,20 +168,35 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>${org.aspectj-version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>${org.aspectj-version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- 自定义扩展-GSON -->
         <dependency>
             <groupId>com.github.link-kou</groupId>
             <artifactId>gson</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
 
+        <!-- 自定义扩展-统一配置 -->
+        <dependency>
+            <groupId>com.github.link-kou</groupId>
+            <artifactId>config-property</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+        <!-- 自定义扩展-统一校验 -->
+        <dependency>
+            <groupId>com.github.link-kou</groupId>
+            <artifactId>annotation-validate</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
     </dependencies>
 
@@ -200,7 +212,6 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>utf-8</encoding>
-                    <compilerArgument>-proc:none</compilerArgument>
                 </configuration>
             </plugin>
             <!-- 生成sources源码包的插件 -->
@@ -293,7 +304,6 @@
         </resources>
 
     </build>
-
 
     <profiles>
         <profile>

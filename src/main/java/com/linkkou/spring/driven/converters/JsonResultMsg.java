@@ -7,11 +7,11 @@ package com.linkkou.spring.driven.converters;
  * @version 1.0
  * @data 2017-12-08 21:45
  */
-public interface JsonResultMsg<T extends Enum> {
+public interface JsonResultMsg {
 
 	/**
 	 * 获取Success结果
-	 * @return
+	 * @return boolean
 	 */
 	boolean getSuccess();
 

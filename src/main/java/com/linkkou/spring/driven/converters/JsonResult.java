@@ -1,35 +1,37 @@
 package com.linkkou.spring.driven.converters;
 
 import com.baidu.unbiz.fluentvalidator.ComplexResult;
-import com.plugin.configproperty.Config;
-import com.plugin.configproperty.ConfigUtils;
-import com.plugin.configproperty.ConfigValue;
+import com.linkkou.configproperty.Config;
+import com.linkkou.configproperty.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.servlet.NoHandlerFoundException;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Control 输出模版
+ * 统一输出返回 输出模版
  *
  * @author LK
  * @version 1.0
  * @date 2017-12-08 19:29
  */
-public class JsonResult<T> {
+public class JsonResult {
 
     private static Logger logger = LoggerFactory.getLogger("JsonResultLogger");
 
-    @ConfigValue(@Value("${SystemMsgEnums.ERROR.JSONRESULT.NOSUCHFIELDEXCEPTION.msg}"))
-    private transient Config<String> NOSUCHFIELDEXCEPTION;
-
+    private static Pattern p = Pattern.compile("[\\$\\{\\}]");
 
     private static final String CODENAME = "code";
+
     private static final String MSGNAME = "msg";
+
     private static final String DATANAME = "data";
+
     private static final String SUCCESSNAME = "success";
 
     /**
@@ -50,7 +52,7 @@ public class JsonResult<T> {
     /**
      * 消息枚举类型
      */
-    private transient JsonResultMsg<Enum> msgtype;
+    private transient JsonResultMsg msgtype;
 
     /**
      * 消息枚举原生类型
@@ -60,7 +62,7 @@ public class JsonResult<T> {
     /**
      * 数据类型
      */
-    private T data;
+    private Object data;
 
     /**
      * 状态
@@ -88,7 +90,7 @@ public class JsonResult<T> {
      *
      * @return Enum
      */
-    public JsonResultMsg<Enum> getMsgtype() {
+    public JsonResultMsg getMsgtype() {
         return this.msgtype;
     }
 
@@ -97,16 +99,6 @@ public class JsonResult<T> {
      */
     public Enum<?> getEnumtype() {
         return this.enumtype;
-    }
-
-    /**
-     * 状态
-     *
-     * @return boolean
-     */
-    @Deprecated
-    public boolean getSuccess() {
-        return success;
     }
 
     /**
@@ -123,33 +115,8 @@ public class JsonResult<T> {
      *
      * @return E
      */
-    public T getData() {
-        return this.data;
-    }
-
-    /**
-     * 获取HashMap格式
-     *
-     * @return
-     */
-    public Map<String, Object> getMap() {
-        return resolveEnum(this.msgtype);
-    }
-
-    /**
-     * 比较枚举是否一致
-     * <p>注意：枚举继承 {@code JsonResultMsg<Enum>}正确</p>
-     * 注意：枚举继承 {@code JsonResultMsg<Enum<?>>} 错误
-     *
-     * @param value
-     * @return
-     */
-    public boolean isEnums(JsonResultMsg<Enum> value) {
-        final HashMap<String, Object> hashMap = resolveEnum(value);
-        if (this.code.equals((Integer) hashMap.get("code")) && this.msg.equals((String) hashMap.get("msg"))) {
-            return true;
-        }
-        return false;
+    public <T> T getData() {
+        return (T) this.data;
     }
 
 
@@ -170,7 +137,7 @@ public class JsonResult<T> {
      *
      * @param value 枚举
      */
-    public JsonResult(JsonResultMsg<Enum> value) {
+    public JsonResult(JsonResultMsg value) {
         this.jsonResult(null, value);
     }
 
@@ -178,11 +145,11 @@ public class JsonResult<T> {
     /**
      * 枚举配置输出,bool判断输出指定枚举
      *
-     * @param val bool
+     * @param val    bool
      * @param value1 true 执行
      * @param value2 false 执行
      */
-    public JsonResult(boolean val, JsonResultMsg<Enum> value1, JsonResultMsg<Enum> value2) {
+    public JsonResult(boolean val, JsonResultMsg value1, JsonResultMsg value2) {
         if (val) {
             this.jsonResult(null, value1);
         } else {
@@ -196,9 +163,10 @@ public class JsonResult<T> {
      * <b>警告：此方法用于与HTTP请求或其他请求输出远程服务</b>
      *
      * @param value 枚举
+     * @param msg   自定义消息
      */
     @SuppressWarnings("unchecked")
-    public JsonResult(JsonResultMsg<Enum> value, String msg) {
+    public JsonResult(JsonResultMsg value, String msg) {
         this.jsonResult(null, value, msg);
     }
 
@@ -209,7 +177,7 @@ public class JsonResult<T> {
      * @param value 枚举
      */
     @SuppressWarnings("unchecked")
-    public JsonResult(Object data, JsonResultMsg<Enum> value) {
+    public JsonResult(Object data, JsonResultMsg value) {
         this.jsonResult(data, value);
     }
 
@@ -221,8 +189,7 @@ public class JsonResult<T> {
      * @param total 分页
      * @param value 枚举
      */
-    @Deprecated
-    public JsonResult(Object data, int total, JsonResultMsg<Enum> value) {
+    public JsonResult(Object data, int total, JsonResultMsg value) {
         HashMap<String, Object> h = new HashMap<>(16);
         h.put("total", total);
         h.put("list", data);
@@ -237,8 +204,7 @@ public class JsonResult<T> {
      * @param total    分页
      * @param value    枚举
      */
-    @Deprecated
-    public JsonResult(Object data, String dataname, int total, JsonResultMsg<Enum> value) {
+    public JsonResult(Object data, String dataname, int total, JsonResultMsg value) {
         HashMap<String, Object> h = new HashMap<>(16);
         h.put("total", total);
         h.put(dataname, data);
@@ -264,18 +230,32 @@ public class JsonResult<T> {
         }
     }
 
-    private static Pattern p = Pattern.compile("[\\$\\{\\}]");
+    /**
+     * 配置输出
+     *
+     * @param code
+     * @param msg
+     * @param success
+     */
+    public JsonResult(Config<Integer> code, Config<String> msg, Boolean success) {
+        this.code = code.get();
+        this.msg = msg.get();
+        this.success = success;
+    }
 
-    private void jsonResult(Object data, JsonResultMsg<Enum> value) {
+    private void jsonResult(Object data, JsonResultMsg value) {
         jsonResult(data, value, null);
     }
 
-    private void jsonResult(Object data, JsonResultMsg<Enum> value, String customMsg) {
-        final HashMap<String, Object> hashMap = resolveEnum(value);
-        this.code = (Integer) hashMap.get(CODENAME);
-        this.data = (T) data;
-        this.msg = customMsg == null ? (String) hashMap.get(MSGNAME) : customMsg;
-        this.success = value.getSuccess();
+    /**
+     * 构造
+     *
+     * @param data      数据
+     * @param value     继承JsonResultMsg的枚举
+     * @param customMsg 自定义文本消息
+     */
+    private void jsonResult(Object data, JsonResultMsg value, String customMsg) {
+        resolveEnum(data, value, customMsg);
     }
 
     /**
@@ -284,31 +264,28 @@ public class JsonResult<T> {
      * @param value
      * @return
      */
-    private HashMap<String, Object> resolveEnum(JsonResultMsg<Enum> value) {
+    private void resolveEnum(Object data, JsonResultMsg value, String customMsg) {
         Enum e = ((Enum<?>) value);
         this.msgtype = value;
         this.enumtype = e;
         Field f = null;
         try {
             f = e.getClass().getField(e.name());
-        } catch (NoSuchFieldException e1) {
-            logger.error(NOSUCHFIELDEXCEPTION.get());
-            throw new SecurityException(NOSUCHFIELDEXCEPTION.get());
-        }
-        JsonResultValue jsonResultValue = f.getAnnotation(JsonResultValue.class);
-        HashMap<String, Object> hashMap = new HashMap<>(16);
-        if (jsonResultValue != null) {
-            Value code = jsonResultValue.Code();
-            Value msg = jsonResultValue.Msg();
-            String matchercode = p.matcher(code.value()).replaceAll("");
-            String matchermsg = p.matcher(msg.value()).replaceAll("");
-            hashMap.put(CODENAME, new ConfigUtils(matchercode).getInteger());
-            hashMap.put(MSGNAME, new ConfigUtils(matchermsg).getString());
-            hashMap.put(DATANAME, this.data);
-            hashMap.put(SUCCESSNAME, this.success);
-            return hashMap;
-        } else {
-            return hashMap;
+            JsonResultValue jsonResultValue = f.getAnnotation(JsonResultValue.class);
+            if (jsonResultValue != null) {
+                Value code = jsonResultValue.Code();
+                Value msg = jsonResultValue.Msg();
+                String matchercode = p.matcher(code.value()).replaceAll("");
+                String matchermsg = p.matcher(msg.value()).replaceAll("");
+                Config<Integer> integerConfig = new ConfigUtils(matchercode, -10000).getConfig("Integer", true);
+                Config<String> stringConfig = new ConfigUtils(matchermsg, "").getConfig("String", true);
+                this.code = integerConfig.get();
+                this.data = data;
+                this.msg = customMsg == null ? stringConfig.get() : customMsg;
+                this.success = value.getSuccess();
+            }
+        } catch (NoSuchFieldException ex) {
+            ex.printStackTrace();
         }
     }
 }
