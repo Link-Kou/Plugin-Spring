@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * 全局统一错误捕捉
@@ -55,7 +60,16 @@ public class ExceptionRestControllerAdvice {
     @ExceptionHandler(value = BindException.class)
     public JsonResult scheduleError(BindException e) throws Exception {
         logger.error(" BindException: " + e.getMessage(), e);
-        return new JsonResult(SystemMsgEnums.OPS_FAILURE);
+        return new JsonResult(SystemMsgEnums.OPS_VALIDATION_EXCEPTION);
+    }
+
+    /**
+     * Validated 校验错误
+     */
+    @ExceptionHandler(value = javax.validation.ValidationException.class)
+    public JsonResult scheduleError(javax.validation.ValidationException e) throws Exception {
+        logger.error(" ValidationException: " + e.getMessage(), e);
+        return new JsonResult(SystemMsgEnums.OPS_VALIDATION_EXCEPTION);
     }
 
     /**
@@ -87,12 +101,15 @@ public class ExceptionRestControllerAdvice {
 
 
     @RequestMapping(value = "/404")
-    public JsonResult error404() {
-        return new JsonResult(SystemMsgEnums.OPS_404);
+    public JsonResult error404(HttpServletRequest request, HttpServletResponse response) {
+        final HttpServletRequestWrapper request1 = (HttpServletRequestWrapper) request;
+        final ServletRequest request2 = request1.getRequest();
+        final String requestURI = ((HttpServletRequest) request2).getRequestURI();
+        return new JsonResult(requestURI, SystemMsgEnums.OPS_404);
     }
 
     @RequestMapping(value = "/500")
-    public JsonResult error500() {
+    public JsonResult error500(HttpServletRequest request, HttpServletResponse response) {
         return new JsonResult(SystemMsgEnums.OPS_500);
     }
 

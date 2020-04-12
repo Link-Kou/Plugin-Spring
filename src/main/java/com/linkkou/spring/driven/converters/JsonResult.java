@@ -7,10 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -131,6 +134,22 @@ public class JsonResult {
         this.msg = exception.getMessage();
     }
 
+
+    /**
+     * 异常输出
+     *
+     * @param bindingResult
+     */
+    public JsonResult(BindingResult bindingResult) {
+        this.success = false;
+        this.code = ERRORCODE;
+        final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+        StringBuffer msg = new StringBuffer();
+        for (FieldError fieldError : fieldErrors) {
+            msg.append(String.format("%s:%s", fieldError.getField(), fieldError.getDefaultMessage()));
+        }
+        this.msg = msg.toString();
+    }
 
     /**
      * 枚举配置输出

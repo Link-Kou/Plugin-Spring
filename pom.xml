@@ -8,11 +8,11 @@
     <groupId>com.github.link-kou</groupId>
     <artifactId>spring</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>Plugin-Spring-${project.version}</name>
     <url>https://github.com/Link-Kou/Plugin-Spring</url>
 
-    <description>ConfigPropertyPlugin</description>
+    <description>SpringPlugin</description>
 
     <licenses>
         <license>
@@ -177,11 +177,20 @@
             <scope>provided</scope>
         </dependency>
 
+        <!--lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.0</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- 自定义扩展-GSON -->
         <dependency>
             <groupId>com.github.link-kou</groupId>
             <artifactId>gson</artifactId>
             <version>1.0.3</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- 自定义扩展-统一配置 -->
@@ -189,12 +198,21 @@
             <groupId>com.github.link-kou</groupId>
             <artifactId>config-property</artifactId>
             <version>1.0.1</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- 自定义扩展-统一校验 -->
         <dependency>
             <groupId>com.github.link-kou</groupId>
             <artifactId>annotation-validate</artifactId>
+            <version>1.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--分布式ID-->
+        <dependency>
+            <groupId>com.github.link-kou</groupId>
+            <artifactId>uid</artifactId>
             <version>1.0.0</version>
         </dependency>
 
@@ -242,7 +260,8 @@
                     <charset>UTF-8</charset>
                     <encoding>UTF-8</encoding>
                     <docencoding>UTF-8</docencoding>
-                    <javadocExecutable>/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/bin/javadoc</javadocExecutable>
+                    <javadocExecutable>/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/bin/javadoc
+                    </javadocExecutable>
                 </configuration>
                 <executions>
                     <execution>
@@ -343,7 +362,9 @@
                             <charset>UTF-8</charset>
                             <encoding>UTF-8</encoding>
                             <docencoding>UTF-8</docencoding>
-                            <javadocExecutable>/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/bin/javadoc</javadocExecutable>
+                            <javadocExecutable>
+                                /Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/bin/javadoc
+                            </javadocExecutable>
                         </configuration>
                         <executions>
                             <execution>
