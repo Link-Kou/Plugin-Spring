@@ -14,6 +14,6 @@ public interface TreeToFunction<T, R> {
      *
      * @param item1 被迭代的每一项
      */
-    T apply(T item1, List<R> item2);
+    List<T> apply(T item1, List<R> item2);
 
 }

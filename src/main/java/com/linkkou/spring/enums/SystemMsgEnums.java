@@ -66,6 +66,13 @@ public enum SystemMsgEnums implements JsonResultMsg {
     OPS_USER_NOTTOKEN(false),
 
     /**
+     * 数据异常
+     * 列如：数据重复，或数据不存在而无法返回对象
+     */
+    @JsonResultValue(Code = @Value("${SystemMsgEnums.OPS_Repeatedly_DataException.code}"), Msg = @Value("${SystemMsgEnums.OPS_Repeatedly_DataException.msg}"))
+    OPS_Repeatedly_DataException(false),
+
+    /**
      * 重复添加
      */
     @JsonResultValue(Code = @Value("${SystemMsgEnums.OPS_Repeatedly_Added.code}"), Msg = @Value("${SystemMsgEnums.OPS_Repeatedly_Added.msg}"))
@@ -95,11 +102,18 @@ public enum SystemMsgEnums implements JsonResultMsg {
     @JsonResultValue(Code = @Value("${SystemMsgEnums.OPS_URL_IS_NOT_EFFECT.code}"), Msg = @Value("${SystemMsgEnums.OPS_URL_IS_NOT_EFFECT.msg}"))
     OPS_URL_IS_NOT_EFFECT(false),
 
+
+    /**
+     * 接口已禁用
+     */
+    @JsonResultValue(Code = @Value("${SystemMsgEnums.OPS_SQL_QUERY.code}"), Msg = @Value("${SystemMsgEnums.OPS_SQL_QUERY.msg}"))
+    OPS_SQL_QUERY(false),
+
     /**
      * 校验失败
      */
     @JsonResultValue(Code = @Value("${SystemMsgEnums.OPS_VALIDATION_EXCEPTION.code}"), Msg = @Value("${SystemMsgEnums.OPS_VALIDATION_EXCEPTION.msg}"))
-	OPS_VALIDATION_EXCEPTION(false);
+    OPS_VALIDATION_EXCEPTION(false);
 
     private boolean success;
 

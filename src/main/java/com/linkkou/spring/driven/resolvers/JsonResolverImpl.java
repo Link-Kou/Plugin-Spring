@@ -82,7 +82,8 @@ public class JsonResolverImpl implements HandlerMethodArgumentResolver {
             baos.write(i);
         }
         String data = new String(baos.toByteArray(), StandardCharsets.UTF_8);
-        servletRequest.setAttribute("XXXX", data);
+        logger.debug(String.format("JsonResolverImpl ======> %s", data));
+        //servletRequest.setAttribute("XXXX", data);
         final Object o = gson.fromJson(data, methodParameter.getGenericParameterType());
         return validated(methodParameter, modelAndViewContainer, nativeWebRequest, webDataBinderFactory, o);
     }

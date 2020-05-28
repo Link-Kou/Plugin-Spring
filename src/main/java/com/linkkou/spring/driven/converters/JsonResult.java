@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * @version 1.0
  * @date 2017-12-08 19:29
  */
-public class JsonResult {
+public class JsonResult<T> {
 
     private static Logger logger = LoggerFactory.getLogger("JsonResultLogger");
 
@@ -141,12 +141,13 @@ public class JsonResult {
      * @param bindingResult
      */
     public JsonResult(BindingResult bindingResult) {
+        final String property = System.getProperty("line.separator");
         this.success = false;
         this.code = ERRORCODE;
         final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         StringBuffer msg = new StringBuffer();
         for (FieldError fieldError : fieldErrors) {
-            msg.append(String.format("%s:%s", fieldError.getField(), fieldError.getDefaultMessage()));
+            msg.append(String.format("%s:%s;%s", fieldError.getField(), fieldError.getDefaultMessage(), property));
         }
         this.msg = msg.toString();
     }
@@ -196,7 +197,7 @@ public class JsonResult {
      * @param value 枚举
      */
     @SuppressWarnings("unchecked")
-    public JsonResult(Object data, JsonResultMsg value) {
+    public JsonResult(T data, JsonResultMsg value) {
         this.jsonResult(data, value);
     }
 
@@ -208,11 +209,11 @@ public class JsonResult {
      * @param total 分页
      * @param value 枚举
      */
-    public JsonResult(Object data, int total, JsonResultMsg value) {
+    public JsonResult(T data, int total, JsonResultMsg value) {
         HashMap<String, Object> h = new HashMap<>(16);
         h.put("total", total);
         h.put("list", data);
-        this.jsonResult(h, value);
+        this.resolveEnum(h, value, null);
     }
 
     /**
@@ -223,11 +224,11 @@ public class JsonResult {
      * @param total    分页
      * @param value    枚举
      */
-    public JsonResult(Object data, String dataname, int total, JsonResultMsg value) {
+    public JsonResult(T data, String dataname, int total, JsonResultMsg value) {
         HashMap<String, Object> h = new HashMap<>(16);
         h.put("total", total);
         h.put(dataname, data);
-        this.jsonResult(h, value);
+        this.resolveEnum(h, value, null);
     }
 
     /**
@@ -262,7 +263,7 @@ public class JsonResult {
         this.success = success;
     }
 
-    private void jsonResult(Object data, JsonResultMsg value) {
+    private void jsonResult(T data, JsonResultMsg value) {
         jsonResult(data, value, null);
     }
 
@@ -273,7 +274,7 @@ public class JsonResult {
      * @param value     继承JsonResultMsg的枚举
      * @param customMsg 自定义文本消息
      */
-    private void jsonResult(Object data, JsonResultMsg value, String customMsg) {
+    private void jsonResult(T data, JsonResultMsg value, String customMsg) {
         resolveEnum(data, value, customMsg);
     }
 

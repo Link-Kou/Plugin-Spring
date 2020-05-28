@@ -5,7 +5,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
+ * 构建树
  * List to Tree
+ *
  * @author lk
  * @version 1.0
  * @date 2020/4/15 14:39
@@ -36,9 +38,9 @@ public class Trees {
         private Collection<? extends R> to;
 
         private TreeFromFunction<T, ?> getParentId;
+        private TreeFromFunction<T, ?> getId;
 
-        private Map<Object, T> hashMapid = new ConcurrentHashMap<>(16);
-        private Map<Object, List<T>> hashMapParentid = new ConcurrentHashMap<>(16);
+        private Map<Object, T> hashMapid = new HashMap<>(16);
 
         public TreesConfig(Collection<? extends T> from, Collection<? extends R> to) {
             this.from = from;
@@ -46,104 +48,87 @@ public class Trees {
         }
 
         public <E> TreesConfig<T, R> getId(TreeFromFunction<T, E> id) {
-            Collection<? extends T> collection = this.from;
-            for (T item : collection) {
-                if (Optional.ofNullable(item).isPresent()) {
-                    final E apply = id.apply(item);
-                    this.hashMapid.put(apply, item);
-                }
-            }
+            this.getId = id;
             return this;
         }
 
         public <E> TreesConfig<T, R> getParentId(TreeFromFunction<T, E> id) {
             this.getParentId = id;
-            Collection<? extends T> collection = this.from;
-            for (T item : collection) {
-                if (Optional.ofNullable(item).isPresent()) {
-                    final E apply = id.apply(item);
-                    List<T> ts;
-                    if (this.hashMapParentid.containsKey(apply)) {
-                        ts = this.hashMapParentid.get(apply);
-                        ts.add(item);
-                    } else {
-                        ts = new ArrayList<>();
-                        ts.add(item);
-                    }
-                    this.hashMapParentid.put(apply, ts);
-                }
-            }
             return this;
         }
 
         public TreesBuild<R, R> setTranslate(TreeFromFunction<T, R> set) {
-            Map<Object, R> rhashMapid = new ConcurrentHashMap<>(16);
-            Map<Object, List<R>> rhashMapParentid = new ConcurrentHashMap<>(16);
-
-            hashMapid.entrySet().forEach(x -> {
-                final T value = x.getValue();
-                final List<T> t = hashMapParentid.get(x.getKey());
-                List<R> collect;
-                if (Optional.ofNullable(t).isPresent()) {
-                    collect = t.stream().map((k) -> set.apply(k)).collect(Collectors.toList());
-                } else {
-                    collect = new ArrayList<>();
+            Collection<? extends T> collection = this.from;
+            for (T item : collection) {
+                if (Optional.ofNullable(item).isPresent()) {
+                    final Object id = this.getId.apply(item);
+                    this.hashMapid.put(id, item);
                 }
-                final R apply = set.apply(value);
-                rhashMapid.put(x.getKey(), apply);
-                rhashMapParentid.put(x.getKey(), collect);
-            });
-            return new TreesBuild(hashMapid, this.getParentId, rhashMapid, rhashMapParentid);
+            }
+            return new TreesBuild(hashMapid, getParentId, set);
         }
 
     }
 
     public static class TreesBuild<T, R> {
 
-        private Map<Object, R> oldhashMapid;
+        private Map<Object, R> hashMapid;
 
         private TreeFromFunction<R, ?> getParentId;
 
-        private Map<Object, T> hashMapid;
+        private TreeFromFunction<R, R> set;
 
-        private Map<Object, List<T>> hashMapParentid;
+        private TreeToFunction<R, R> setChildren;
 
-        private TreeToFunction<T, T> setChildren;
+        private Comparator<R> getSort;
 
-        private List<T> trees = new ArrayList<>();
-
-        public TreesBuild(Map<Object, R> oldhashMapid, TreeFromFunction<R, ?> getParentId, Map<Object, T> hashMapid, Map<Object, List<T>> hashMapParentid) {
-            this.oldhashMapid = oldhashMapid;
-            this.getParentId = getParentId;
+        public TreesBuild(Map<Object, R> hashMapid, TreeFromFunction<R, ?> getParentId, TreeFromFunction<R, R> set) {
             this.hashMapid = hashMapid;
-            this.hashMapParentid = hashMapParentid;
+            this.getParentId = getParentId;
+            this.set = set;
         }
 
-        public TreesBuild<T, R> setChildren(TreeToFunction<T, T> id) {
+        public TreesBuild<T, R> setChildren(TreeToFunction<R, R> id) {
             this.setChildren = id;
             return this;
         }
 
-        public <E> List<T> build(String topid, TreeFromFunction<T, E> getid) {
-            oldhashMapid.entrySet().forEach(x -> {
-                if (Objects.equals(this.getParentId.apply(x.getValue()), topid)) {
-                    final T t = hashMapid.get(x.getKey());
-                    final List<T> ts = hashMapParentid.get(x.getKey());
-                    ts.forEach(fts -> {
-                        final List<T> ts1 = hashMapParentid.get(getid.apply(fts));
-                        this.setChildren.apply(fts, ts1);
-                    });
-                    this.setChildren.apply(t, ts);
-                    trees.add(t);
-                }
-                //final T t = hashMapid.get(x.getKey());
-                //trees.add(this.setChildren.apply(t, ts));
+        public TreesBuild<T, R> getSort(Comparator<R> c) {
+            this.getSort = c;
+            return this;
+        }
+
+        public <E> List<R> build(String topid, TreeFromFunction<R, E> getid) {
+            Map<Object, R> rhashMapid = new HashMap<>(16);
+            HashSet<Object> toplist = new HashSet<>();
+            List<R> trees = new ArrayList<>();
+            this.hashMapid.entrySet().forEach(x -> {
+                final R value = x.getValue();
+                final R apply = set.apply(value);
+                Optional.ofNullable(getid.apply(apply)).ifPresent(o -> rhashMapid.put(o, apply));
             });
-            /*hashMapid.entrySet().forEach(x -> {
-                final List<T> t = hashMapParentid.get(x.getKey());
-                trees.add(this.setChildren.apply(x.getValue(), t));
-            });*/
-            return this.trees;
+            //基于Map递归
+            this.hashMapid.entrySet().forEach(x -> {
+                final Object apply = this.getParentId.apply(x.getValue());
+                //top节点
+                if (Objects.equals(apply, topid)) {
+                    toplist.add(x.getKey());
+                }
+                final R pr = rhashMapid.get(apply);
+                final R r = rhashMapid.get(x.getKey());
+                if (Optional.ofNullable(pr).isPresent()) {
+                    final List<R> apply1 = this.setChildren.apply(pr, new ArrayList(Arrays.asList(r)));
+                    Collections.sort(apply1, this.getSort);
+                }
+            });
+            toplist.stream().forEach(x -> {
+                final R r = rhashMapid.get(x);
+                Optional.ofNullable(r).ifPresent(o -> {
+                    trees.add(o);
+                    Collections.sort(trees, this.getSort);
+                });
+            });
+            return trees;
         }
     }
 

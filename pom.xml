@@ -184,6 +184,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- 加密 https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.14</version>
+        </dependency>
+
         <!-- AspectJ -->
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -211,7 +218,8 @@
             <groupId>com.github.link-kou</groupId>
             <artifactId>gson</artifactId>
             <version>1.0.3</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- 自定义扩展-统一配置 -->
@@ -219,7 +227,8 @@
             <groupId>com.github.link-kou</groupId>
             <artifactId>config-property</artifactId>
             <version>1.0.1</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- 自定义扩展-统一校验 -->
@@ -227,7 +236,8 @@
             <groupId>com.github.link-kou</groupId>
             <artifactId>annotation-validate</artifactId>
             <version>1.0.1</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
 
         <!--分布式ID-->
@@ -235,6 +245,15 @@
             <groupId>com.github.link-kou</groupId>
             <artifactId>uid</artifactId>
             <version>1.0.0</version>
+        </dependency>
+
+        <!--元组与列表 https://www.javatuples.org/index.html-->
+        <dependency>
+            <groupId>org.javatuples</groupId>
+            <artifactId>javatuples</artifactId>
+            <version>1.2</version>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>
