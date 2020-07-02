@@ -17,12 +17,12 @@
     
 ### Maven仓库
     
-```xml：
+```xml
 
 <dependency>
   <groupId>com.github.link-kou</groupId>
   <artifactId>spring</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 
 ```
@@ -30,7 +30,7 @@
 
 ### 示列
 
-```xml:
+```xml
 
 ```
 
