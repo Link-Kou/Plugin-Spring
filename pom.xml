@@ -69,6 +69,11 @@
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
         <repository>
+            <id>central-repos1</id>
+            <name>Central Repository 2</name>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
             <id>in-project</id>
             <name>In Project Repo</name>
             <url>file://${project.basedir}/lib</url>
@@ -226,7 +231,7 @@
         <dependency>
             <groupId>com.github.link-kou</groupId>
             <artifactId>config-property</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
