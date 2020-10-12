@@ -8,7 +8,7 @@
     <groupId>com.github.link-kou</groupId>
     <artifactId>spring</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <name>Plugin-Spring-${project.version}</name>
     <url>https://github.com/Link-Kou/Plugin-Spring</url>
 

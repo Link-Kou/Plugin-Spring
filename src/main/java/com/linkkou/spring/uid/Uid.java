@@ -2,14 +2,14 @@ package com.linkkou.spring.uid;
 
 import com.linkkou.uid.UidGenerator;
 import com.linkkou.uid.exception.UidGenerateException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author lk
  * @version 1.0
  * @date 2020/4/2 14:51
  */
-@Component
+@Repository
 public interface Uid {
 
     /**
